@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 /*eslint-env node*/
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = (env, options) => {
 	return {
-		entry: './examples/src/index.jsx',
+		entry: ['regenerator-runtime/runtime.js', './examples/src/index.jsx'],
 		output: {
 			path: path.resolve(__dirname, 'examples/dist'),
 			filename: 'index.js',
@@ -14,16 +15,17 @@ module.exports = (env, options) => {
 		},
 		module: {
 			rules: [{
-				test: /\.jsx?/,
-				exclude: /node_modules/,
+				//test: /\.jsx?/,
+				test: /\.(jsx|js)?$/,
+				exclude: /node_modules\/(?!tedious)/,
 				use: [
 					'babel-loader',
-					{
-						loader: 'eslint-loader',
-						options: {
-							emitWarning: options.mode === 'development', // Avoid to block compilation when ESLint error
-						}
-					}
+					//{
+					//	loader: 'eslint-loader',
+					//	options: {
+					//		emitWarning: options.mode === 'development', // Avoid to block compilation when ESLint error
+					//	}
+					//}
 				],
 			}, {
 				test: /\.scss$/,
@@ -53,7 +55,8 @@ module.exports = (env, options) => {
 			new HtmlWebPackPlugin({
 				template: './examples/src/index.html',
 				filename: './index.html'
-			})
+			}),
+			//'@babel/plugin-transform-typescript'
 		]
 	};
 };

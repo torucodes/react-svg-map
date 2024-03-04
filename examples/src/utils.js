@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 /**
  * Return the id of the location targeted by the event
  * @param  {Event} event Occured event

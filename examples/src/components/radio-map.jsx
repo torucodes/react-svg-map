@@ -1,81 +1,71 @@
-import React from 'react';
-import Australia from '@svg-maps/australia';
+// Import useState and useEffect
+import React, { useState, useEffect } from 'react';
+import fetchData from '../taiwan.main';
 import { RadioSVGMap } from '../../../src/';
 import { getLocationName } from '../utils';
 
-class RadioMap extends React.Component {
-	constructor(props) {
-		super(props);
+const RadioMap = () => {
+    const [pointedLocation, setPointedLocation] = useState(null);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [mapData, setMapData] = useState(null);
 
-		this.state = {
-			pointedLocation: null,
-			focusedLocation: null,
-			selectedLocation: null
-		};
+    const handleLocationMouseOver = (event) => {
+        const pointedLocation = getLocationName(event);
+        setPointedLocation(pointedLocation);
+    };
 
-		this.handleLocationMouseOver = this.handleLocationMouseOver.bind(this);
-		this.handleLocationMouseOut = this.handleLocationMouseOut.bind(this);
-		this.handleLocationFocus = this.handleLocationFocus.bind(this);
-		this.handleLocationBlur = this.handleLocationBlur.bind(this);
-		this.handleOnChange = this.handleOnChange.bind(this);
-	}
+    const handleLocationMouseOut = () => {
+        setPointedLocation(null);
+    };
 
-	handleLocationMouseOver(event) {
-		const pointedLocation = getLocationName(event);
-		this.setState({ pointedLocation: pointedLocation });
-	}
+    const handleOnChange = (selectedNode) => {
+        const selectedLocation = selectedNode.attributes.name.value;
+        setSelectedLocation(selectedLocation);
+        openPopup(selectedLocation); // Open the popup window with the selected location
+    };
 
-	handleLocationMouseOut() {
-		this.setState({ pointedLocation: null });
-	}
+    const openPopup = (location) => {
+        const width = 400; // Width of the pop-up window
+        const height = 300; // Height of the pop-up window
+        const left = (window.innerWidth - width) / 2; // Calculate the left position
+        const top = (window.innerHeight - height) / 2; // Calculate the top position
 
-	handleLocationFocus(event) {
-		const focusedLocation = getLocationName(event);
-		this.setState({ focusedLocation: focusedLocation });
-	}
+        const popupWindow = window.open('', '_blank', `width=${width},height=${height},left=${left},top=${top}`);
+        popupWindow.document.write(`<p>You selected: ${location}</p>`);
+    };
 
-	handleLocationBlur() {
-		this.setState({ focusedLocation: null });
-	}
+    useEffect(() => {
+        const fetchDataAsync = async () => {
+            try {
+                const data = await fetchData();
+                setMapData(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
 
-	handleOnChange(selectedNode) {
-		this.setState(prevState => {
-			return {
-				...prevState,
-				selectedLocation: selectedNode.attributes.name.value
-			};
-		});
-	}
+        fetchDataAsync();
+    }, []);
 
-	render() {
-		return (
-			<article className="examples__block">
-				<h2 className="examples__block__title">
-					Australia SVG map as radio buttons
-				</h2>
-				<div className="examples__block__info">
-					<div className="examples__block__info__item">
-						Pointed location: {this.state.pointedLocation}
-					</div>
-					<div className="examples__block__info__item">
-						Focused location: {this.state.focusedLocation}
-					</div>
-					<div className="examples__block__info__item">
-						Selected location: {this.state.selectedLocation}
-					</div>
-				</div>
-				<div className="examples__block__map examples__block__map--australia">
-					<RadioSVGMap
-						map={Australia}
-						onLocationMouseOver={this.handleLocationMouseOver}
-						onLocationMouseOut={this.handleLocationMouseOut}
-						onLocationFocus={this.handleLocationFocus}
-						onLocationBlur={this.handleLocationBlur}
-						onChange={this.handleOnChange} />
-				</div>
-			</article>
-		);
-	}
-}
+    return (
+        <article className="examples__block">
+            <h2 className="examples__block__title">Radio Buttons</h2>
+            <div className="examples__block__info">
+                <div className="examples__block__info__item">Pointed: {pointedLocation}</div>
+                <div className="examples__block__info__item">Selected: {selectedLocation}</div>
+            </div>
+            <div className="examples__block__map examples__block__map--australia">
+                {mapData && (
+                    <RadioSVGMap
+                        map={mapData}
+                        onLocationMouseOver={handleLocationMouseOver}
+                        onLocationMouseOut={handleLocationMouseOut}
+                        onChange={handleOnChange}
+                    />
+                )}
+            </div>
+        </article>
+    );
+};
 
 export default RadioMap;

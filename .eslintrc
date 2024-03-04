@@ -18,6 +18,7 @@
 			"experimentalObjectRestSpread": true,
 			"jsx": true
 		},
+		"ecmaVersion": 8,
 		"sourceType": "module"
 	},
 	"plugins": [
@@ -34,7 +35,7 @@
 		],
 		"linebreak-style": [
 			"error",
-			"unix"
+			"windows"
 		],
 		"quotes": [
 			"error",
