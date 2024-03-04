@@ -34,34 +34,9 @@ const CheckboxMap = () => {
 	};
 	*/
 
-	const handleOnChangeX = (selectedNodes) => {
-		// Extract the names from the selected nodes
-		const selectedLocationsNames = selectedNodes.map((node) => node.attributes.name.value);
-
-		// Check for duplicates
-		const uniqueSelectedLocations = Array.from(new Set([...selectedLocations, ...selectedLocationsNames]));
-
-		// Update the state
-		setSelectedLocations(uniqueSelectedLocations);
-	};
-
 	const handleOnChange = (selectedNodes) => {
-		// Extract the names from the selected nodes
-		const selectedLocationsNames = selectedNodes.map((node) => node.attributes.name.value);
-
-		// Toggle selection
-		const updatedSelectedLocations = selectedLocationsNames.reduce((acc, name) => {
-			if (selectedLocations.includes(name)) {
-				// Location is already selected, remove it
-				return acc.filter((selected) => selected !== name);
-			} else {
-				// Location is not selected, add it
-				return [...acc, name];
-			}
-		}, selectedLocations);
-
-		// Update the state
-		setSelectedLocations(updatedSelectedLocations);
+		const selectedLocations = selectedNodes.map((node) => node.attributes.name.value);
+		setSelectedLocations(selectedLocations);
 	};
 
 	useEffect(() => {
